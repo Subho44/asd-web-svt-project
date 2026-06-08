@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course managment </title>
+    <link rel="stylesheet" href="./src/output.css">
+</head>
+<body class="bg-gray-200">
+<section class="max-w-5xl mx-auto px-5 py-10">
+    <h1 class="text-4xl font-bold text-center text-blue-600 mb-8">Course add view delete</h1>
+    <div class="bg-white p-6 rounded-2xl shadow-lg mt-5">
+        <input
+        type="text"
+        id="courseName"
+        placeholder="Enter course name"
+        class="w-full border p-3 rounded-lg mb-4"
+        >
+
+        <input type="text" id="coursePrice" placeholder="Enter course price" class="w-full border p-3 rounded-lg mb-4">
+
+        <button onclick="addcourse()" class="bg-blue-600 text-white px-6 py-3 rounded-lg w-full">
+            Add Course
+        </button>
+    </div>
+
+   <div id ="courseList" class="grid grid-cols-1 md:grid-cols-3  gap-6">
+
+   </div>
+
+</section>
+<script>
+    let courses = JSON.parse(localStorage.getItem("courses"))||[];
+
+    function addcourse(){
+        let courseName = document.getElementById("courseName").value;
+        let coursePrice = document.getElementById("coursePrice").value;
+
+        if(courseName === "" || coursePrice ===""){
+            alert("please fill all fields");
+            return ;
+        }
+
+        let course = {
+            id:Date.now(),
+            name:courseName,
+            price:coursePrice
+        };
+        courses.push(course);
+        localStorage.setItem("courses", JSON.stringify(courses));
+         document.getElementById("courseName").value="";
+         document.getElementById("coursePrice").value="";
+
+         showcourses();
+
+
+    }
+
+    function showcourses(){
+        let courselist = document.getElementById("courseList");
+        courselist.innerHTML = "";
+
+        courses.forEach(function(course){
+            courselist.innerHTML = `
+            
+        <div class="bg-white rounded-2xl shadow-lg p-5 w-full md:w-1/3">
+
+                
+                <h2 class="text-2xl font-bold mt-5 text-gray-800 card-title">
+                    ${course.name}
+                </h2>
+
+                <p class="text-gray-600 mt-3">
+                    Price: ${course.price}
+                </p>
+
+                <button class="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 rounded-lg mt-5" onclick="deletecourse(${course.id})">
+                    Delete
+                </button>
+
+            </div>    
+            
+            `;
+        });
+    }
+
+    function deletecourse(id) {
+        courses = courses.filter(function(course){
+            return course.id !== id;
+
+        });
+        localStorage.setItem("courses", JSON.stringify(courses));
+        showcourses();
+    }
+    showcourses();
+</script>
+    
+</body>
+</html>
